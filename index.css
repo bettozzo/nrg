@@ -5,4 +5,29 @@ body{
 
 h1{
     text-align: center;
+    font-size: 4vw;
+}
+
+form{
+    text-align: center;
+    font-size: larger;
+    font-size: 2vw;
+}
+
+#username{
+    font-size: 1.15vw;
+}
+
+
+#submitBtn{
+    width: 6.5vw;
+    height: 3vw;
+    font-size: 1.15vw;
+    background-color: rgba(131, 109, 0, 0.882);
+    border: none;
+    color: rgb(255, 251, 245);
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }

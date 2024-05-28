@@ -1,0 +1,45 @@
+body{
+    background-color: rgba(0, 0, 0, 0.87);
+    color: rgb(255, 243, 224);
+}
+
+h1{
+    text-align: center;
+}
+
+.divMedia{
+    margin-bottom: 30px;
+    padding: 10px;
+    background-color: rgba(37, 37, 37, 0.87);
+    align-items: center;
+    display: flex;
+}
+.divMedia:hover{
+    background-color: rgba(69, 69, 69, 0.87);
+}
+
+.divLeft{
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.divRight{
+    float:right;
+    margin-right: 0;
+    margin-left: auto;
+}
+
+.poster{ 
+    width: 150px;
+}
+
+.titoloMedia{ 
+    font-size: 150%;
+    margin-left: 40px;
+}
+
+.provider{
+    width: 50px;
+}
