@@ -30,7 +30,7 @@ async function getDoveVedereMedia(mediaId) {
     let validPlatforms = []
     for (const platform of data) {
         if (userPlatforms.map((userP) => platform.piattaforma.nome == userP.piattaformaNome)) {
-            validPlatforms.push(platform.piattaforma.logo_path)
+            validPlatforms.push(platform.piattaforma)
         }
     }
     return validPlatforms
@@ -51,9 +51,9 @@ async function getCronologia() {
 }
 function compareCronologia(a, b) {
     if (a.dataVisione < b.dataVisione) {
-        return -1;
-    } else if (a.dataVisione > b.dataVisione) {
         return 1;
+    } else if (a.dataVisione > b.dataVisione) {
+        return -1;
     }
     return 0;
 }
@@ -114,14 +114,28 @@ async function preparePiattaforme(mediaId) {
     const newDiv = document.createElement("div");
     newDiv.className = "divProvider"
     for (const provider of doveVedereMedia) {
+        const linkToPlatofrm = document.createElement("a");
+        linkToPlatofrm.href = prepareLink(provider.nome)
+        linkToPlatofrm.target = "_blank"
         const logoProvider = document.createElement("img");
-        logoProvider.src = provider
+        logoProvider.src = provider.logo_path
+        logoProvider.alt = provider.nome
+        logoProvider.title = provider.nome
         logoProvider.className = "provider"
-        newDiv.appendChild(logoProvider);
+        linkToPlatofrm.appendChild(logoProvider)
+        newDiv.appendChild(linkToPlatofrm);
     }
     return newDiv
 }
-
+function prepareLink(nome) {
+    switch (nome) {
+        case "Netflix": return "https://www.netflix.com/browse";
+        case "Disney Plus": return "https://www.disneyplus.com/it-it";
+        case "Rai Play": return "https://www.raiplay.it/";
+        case "Crunchyroll": return "https://www.crunchyroll.com/it/";
+        case "Amazon Prime Video": return "TODO";
+    }
+}
 function prepareTitolo(titoloTxt) {
     const titolo = document.createElement("p");
     titolo.textContent = titoloTxt

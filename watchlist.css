@@ -9,10 +9,13 @@ h1{
 
 .divMedia{
     margin-bottom: 30px;
-    padding: 10px;
+    padding: 1%;
     background-color: rgba(37, 37, 37, 0.87);
     display: flex;
     align-items: center;
+    width: 71%;
+    margin-left:auto;
+    margin-right:auto;
 }
 .divMedia:hover{
     background-color: rgba(69, 69, 69, 0.87);
@@ -41,7 +44,7 @@ h1{
 }
 
 .provider{
-    width: 50px;
+    width: 70px;
     padding: 5px;
 }
 
