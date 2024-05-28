@@ -201,3 +201,9 @@ function toggleFilmOrTv(showFilm) {
 
     }
 }
+
+
+document.getElementById("logoff").addEventListener("click", () => {
+    localStorage.clear();
+    window.location.replace("./index.html");
+})

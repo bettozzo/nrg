@@ -11,12 +11,17 @@ async function login(username) {
     return data.length != 0
 }
 
+const storedUsername = localStorage.getItem("username");
+if(storedUsername != null){
+    window.location.replace("./watchlist.html?userid="+storedUsername);
+}
 
 
 document.getElementById("submitBtn").addEventListener("click", async function () {
     let username = document.getElementById("username").value
     let canLog = await login(username);
     if (canLog) {
+        localStorage.setItem("username", username);
         window.location.replace("./watchlist.html?userid="+username);
     }
 })
