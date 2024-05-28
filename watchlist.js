@@ -12,15 +12,17 @@ for (const media of mediaInfo) {
 
     const rightDiv = document.createElement("div");
     rightDiv.className = "divRight"
-    let piattaforme = await preparePiattaforme(media.mediaid.mediaID);
+    console.log(media)
+    let piattaforme = await preparePiattaforme(media.mediaid.mediaID, media.is_local);
     rightDiv.appendChild(piattaforme);
-    newDiv.appendChild(rightDiv);
 
     const middleDiv = document.createElement("div");
     middleDiv.className = "divMiddle"
     middleDiv.appendChild(prepareDeleteBtn(media))
     middleDiv.appendChild(prepareSeenBtn(media, middleDiv, rightDiv))
+
     newDiv.appendChild(middleDiv);
+    newDiv.appendChild(rightDiv);
 
     //show films first
     if (!media.mediaid.is_film) {
@@ -107,7 +109,7 @@ async function prepareGenericMediaDiv(media) {
     return newDiv
 }
 
-async function preparePiattaforme(mediaId) {
+async function preparePiattaforme(mediaId, is_local) {
     const doveVedereMedia = await remoteDao.getDoveVedereMedia(mediaId);
 
     const newDiv = document.createElement("div");
@@ -123,6 +125,15 @@ async function preparePiattaforme(mediaId) {
         logoProvider.className = "provider"
         linkToPlatofrm.appendChild(logoProvider)
         newDiv.appendChild(linkToPlatofrm);
+    }
+    console.log(mediaId, is_local)
+    if (is_local) {
+        const logoProvider = document.createElement("img");
+        logoProvider.src = "./vhs.png"
+        logoProvider.alt = "In locale"
+        logoProvider.title = "In locale"
+        logoProvider.className = "provider"
+        newDiv.appendChild(logoProvider);
     }
     return newDiv
 }
