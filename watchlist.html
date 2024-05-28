@@ -6,6 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
         <link rel="stylesheet" href="watchlist.css">
+        <link rel="stylesheet" href="tabLayout.css">
         <script id="supabase" src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
         <link rel="icon" type="image/x-icon" href="logo.png">
@@ -15,6 +16,15 @@
     </head>
 
     <body>
-        <h1 id="titolo">Errore caricamento</h1>
+        <h1 id="titolo">Caricamento...</h1>
+        
+        <div id="tabLayout">
+            <button class="tablinks active" id="filmTab">Film</button>
+            <button class="tablinks" id="SeriesTab">Serie TV</button>
+            <button class="tablinks" id="cronologiaTab">Cronologia</button>
+        </div>
+        <div id="watchlist"></div>
+        <div id="cronologia"></div>
+            
     </body>
 </html>

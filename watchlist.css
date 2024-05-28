@@ -11,8 +11,8 @@ h1{
     margin-bottom: 30px;
     padding: 10px;
     background-color: rgba(37, 37, 37, 0.87);
-    align-items: center;
     display: flex;
+    align-items: center;
 }
 .divMedia:hover{
     background-color: rgba(69, 69, 69, 0.87);
@@ -42,4 +42,9 @@ h1{
 
 .provider{
     width: 50px;
+    padding: 5px;
+}
+
+p{
+    font-size: 150%;
 }

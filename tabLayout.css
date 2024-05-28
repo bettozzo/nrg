@@ -1,0 +1,28 @@
+/* Style the tab */
+#tabLayout {
+    overflow: hidden;
+    background-color: #898989;
+    display: block;
+    justify-content: space-evenly;
+    margin-bottom: 1%;
+    width: auto;
+}
+
+/* Style the buttons that are used to open the tab content */
+#tabLayout button {
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    height: 50px;
+    font-size: 20px;
+    color: rgb(255, 243, 224);
+    width: 33%;
+}
+
+#tabLayout button:hover { 
+    background-color: #7f7f7f;
+} 
+
+#tabLayout button.active {
+    background-color: #3d3d3d;
+}

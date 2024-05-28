@@ -4,14 +4,22 @@ const supabaseConnection = createClient('https://gxyzupxvwiuhyjtbbwmb.supabase.c
 const userid = new URLSearchParams(window.location.search).get("userid")
 const mediaInfo = await getWatchlist();
 const userPlatforms = await getUserPlatforms();
+const cronologia = await getCronologia();
 
 document.getElementById("titolo").textContent = "Ecco la tua lista, " + userid + " !"
 async function getWatchlist() {
     let { data, error } = await supabaseConnection
         .from('watchlist')
-        .select('mediaid(mediaID, is_film, titolo, sinossi, poster_path), is_local')
+        .select('id, mediaid(mediaID, is_film, titolo, sinossi, poster_path), is_local')
         .eq("userid", userid)
-    return data
+    return data.sort(compareWatchList)
+}
+function compareWatchList(a, b) {
+    if (a.id < b.id) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 async function getDoveVedereMedia(mediaId) {
     let { data, error } = await supabaseConnection
@@ -34,29 +42,70 @@ async function getUserPlatforms() {
         .eq("userId", userid)
     return data
 }
-
+async function getCronologia() {
+    let { data, error } = await supabaseConnection
+        .from('CronologiaMedia')
+        .select('mediaId(mediaID, is_film, titolo, sinossi, poster_path), dataVisione')
+        .eq("userid", userid)
+    return data.sort(compareCronologia)
+}
+function compareCronologia(a, b) {
+    if (a.dataVisione < b.dataVisione) {
+        return -1;
+    } else if (a.dataVisione > b.dataVisione) {
+        return 1;
+    }
+    return 0;
+}
 
 document.getElementById("titolo").textContent = "Ecco la tua lista, " + userid + " !"
 
+/* Prepare watchlist */
 for (const media of mediaInfo) {
+    var newDiv = await prepareGenericMediaDiv(media.mediaid)
+    const rightDiv = document.createElement("div");
+    rightDiv.className = "divRight"
+    let piattaforme = await preparePiattaforme(media.mediaid.mediaID);
+    rightDiv.appendChild(piattaforme);
+    newDiv.appendChild(rightDiv);
+
+    //show films first
+    if (!media.mediaid.is_film) {
+        newDiv.style.display = "none"
+        newDiv.className += " TV"
+    } else {
+        newDiv.className += " film"
+    }
+    document.getElementById("watchlist").appendChild(newDiv)
+}
+
+/* Prepare cronologia */
+document.getElementById("cronologia").style.display = "none";
+for (const media of cronologia) {
+    var newDiv = await prepareGenericMediaDiv(media.mediaId)
+    const rightDiv = document.createElement("div");
+    rightDiv.className = "divRight"
+    const dataVisione = document.createElement("p");
+    var text = media.dataVisione.split("-");
+    dataVisione.textContent = text[2] + "/" + text[1] + "/" + text[0]
+    rightDiv.appendChild(dataVisione);
+    newDiv.appendChild(rightDiv);
+    document.getElementById("cronologia").appendChild(newDiv)
+}
+
+async function prepareGenericMediaDiv(media) {
     const newDiv = document.createElement("div");
     newDiv.className = "divMedia"
 
     const leftDiv = document.createElement("div");
     leftDiv.className = "divLeft"
-    let poster = preparePoster(media.mediaid.poster_path)
-    let titolo = prepareTitolo(media.mediaid.titolo)
+    let poster = preparePoster(media.poster_path)
+    let titolo = prepareTitolo(media.titolo)
     leftDiv.appendChild(poster);
     leftDiv.appendChild(titolo);
-    
-    const rightDiv = document.createElement("div");
-    rightDiv.className = "divRight"
-    let piattaforme = await preparePiattaforme(media.mediaid.mediaID);
-    rightDiv.appendChild(piattaforme);
 
     newDiv.appendChild(leftDiv);
-    newDiv.appendChild(rightDiv);
-    document.body.appendChild(newDiv)
+    return newDiv
 }
 
 async function preparePiattaforme(mediaId) {
@@ -87,3 +136,54 @@ function preparePoster(path) {
     return poster
 }
 
+let filmTab = document.getElementById("filmTab");
+let tvTab = document.getElementById("SeriesTab");
+let cronTab = document.getElementById("cronologiaTab");
+
+filmTab.addEventListener("click", function () {
+    toggleFilmOrTv(true);
+    clearTabLayoutActive(filmTab)
+})
+
+tvTab.addEventListener("click", function () {
+    toggleFilmOrTv(false);
+    clearTabLayoutActive(tvTab)
+})
+
+cronTab.addEventListener("click", async function () {
+    clearTabLayoutActive(cronTab)
+    document.getElementById("cronologia").style.removeProperty("display");
+    document.getElementById("watchlist").style.display = "none";
+})
+
+
+function clearTabLayoutActive(pressedButton) {
+    filmTab.className = filmTab.className.replace(" active", "")
+    tvTab.className = tvTab.className.replace(" active", "")
+    cronTab.className = cronTab.className.replace(" active", "")
+    pressedButton.className += " active"
+}
+
+function toggleFilmOrTv(showFilm) {
+    var i, tabcontent;
+    document.getElementById("cronologia").style.display = "none";
+    document.getElementById("watchlist").style.removeProperty("display");
+
+    tabcontent = document.getElementsByClassName("divMedia");
+    for (i = 0; i < tabcontent.length; i++) {
+        if (showFilm) {
+            if (tabcontent[i].className.includes("film") && tabcontent[i].style.display == "none") {
+                tabcontent[i].style.removeProperty("display");
+            } else if (tabcontent[i].className.includes("TV")) {
+                tabcontent[i].style.display = "none"
+            }
+        } else {
+            if (tabcontent[i].className.includes("TV") && (tabcontent[i].style.display == "none")) {
+                tabcontent[i].style.removeProperty("display");
+            } else if (tabcontent[i].className.includes("film")) {
+                tabcontent[i].style.display = "none"
+            }
+        }
+
+    }
+}
