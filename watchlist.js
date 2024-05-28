@@ -58,11 +58,47 @@ function compareCronologia(a, b) {
     return 0;
 }
 
+async function deleteFromWatchlist(mediaid) {
+    let { data, error } = await supabaseConnection
+        .from('watchlist')
+        .delete()
+        .eq("userid", userid)
+        .eq("mediaid", mediaid)
+}
+async function insertToCronologia(mediaid) {
+    const { data, error } = await supabaseConnection
+        .from('CronologiaMedia')
+        .insert([
+            { "userid": userid, "mediaId": mediaid },
+        ])
+        .select()
+}
+
+async function markAsSeen(mediaid) {
+    deleteFromWatchlist(mediaid);
+    insertToCronologia(mediaid);
+}
+
+
 document.getElementById("titolo").textContent = "Ecco la tua lista, " + userid + " !"
 
 /* Prepare watchlist */
 for (const media of mediaInfo) {
     var newDiv = await prepareGenericMediaDiv(media.mediaid)
+
+    const middleDiw = document.createElement("div");
+    middleDiw.className = "divMiddle"
+    let buttonDelete = document.createElement("button");
+    buttonDelete.textContent = "RIMUOVI"
+    buttonDelete.className = "deleteBtn"
+    let buttonSeen = document.createElement("button");
+    buttonSeen.textContent = "VISTO"
+    buttonSeen.className = "seenBtn"
+
+    middleDiw.appendChild(buttonDelete)
+    middleDiw.appendChild(buttonSeen)
+    newDiv.appendChild(middleDiw);
+
     const rightDiv = document.createElement("div");
     rightDiv.className = "divRight"
     let piattaforme = await preparePiattaforme(media.mediaid.mediaID);
@@ -77,6 +113,30 @@ for (const media of mediaInfo) {
         newDiv.className += " film"
     }
     document.getElementById("watchlist").appendChild(newDiv)
+
+    buttonSeen.addEventListener("click", () => {
+        markAsSeen(media.mediaid.mediaID)
+        let mediaDiv = document.getElementsByClassName(media.mediaid.mediaID)[0]
+        middleDiw.style.display = "none"
+        rightDiv.style.display = "none"
+
+        const rightDivAfterSeen = document.createElement("div");
+        rightDivAfterSeen.className = "divRight"
+        const dataVisione = document.createElement("p");
+        var date = new Date()
+        dataVisione.textContent = date.getDate() + "/" + (1+date.getMonth()) + "/" + date.getFullYear()
+        rightDivAfterSeen.appendChild(dataVisione);
+
+        mediaDiv.appendChild(rightDivAfterSeen)
+        let cronologia = document.getElementById("cronologia")
+        cronologia.insertBefore(mediaDiv, cronologia.firstChild)
+    })
+
+    buttonDelete.addEventListener("click", () =>{
+        deleteFromWatchlist(media.mediaid.mediaID)
+        let mediaDiv = document.getElementsByClassName(media.mediaid.mediaID)[0]
+        mediaDiv.parentNode.removeChild(mediaDiv)
+    })
 }
 
 /* Prepare cronologia */
@@ -96,6 +156,7 @@ for (const media of cronologia) {
 async function prepareGenericMediaDiv(media) {
     const newDiv = document.createElement("div");
     newDiv.className = "divMedia"
+    newDiv.className += " " + media.mediaID
 
     const leftDiv = document.createElement("div");
     leftDiv.className = "divLeft"
@@ -133,7 +194,7 @@ function prepareLink(nome) {
         case "Disney Plus": return "https://www.disneyplus.com/it-it";
         case "Rai Play": return "https://www.raiplay.it/";
         case "Crunchyroll": return "https://www.crunchyroll.com/it/";
-        case "Amazon Prime Video": return "TODO";
+        case "Amazon Prime Video": return "https://www.primevideo.com/";
     }
 }
 function prepareTitolo(titoloTxt) {
@@ -142,7 +203,6 @@ function prepareTitolo(titoloTxt) {
     titolo.className = "titoloMedia"
     return titolo
 }
-
 function preparePoster(path) {
     const poster = document.createElement("img");
     poster.src = path
