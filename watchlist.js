@@ -12,7 +12,6 @@ for (const media of mediaInfo) {
 
     const rightDiv = document.createElement("div");
     rightDiv.className = "divRight"
-    console.log(media)
     let piattaforme = await preparePiattaforme(media.mediaid.mediaID, media.is_local);
     rightDiv.appendChild(piattaforme);
 
@@ -126,7 +125,6 @@ async function preparePiattaforme(mediaId, is_local) {
         linkToPlatofrm.appendChild(logoProvider)
         newDiv.appendChild(linkToPlatofrm);
     }
-    console.log(mediaId, is_local)
     if (is_local) {
         const logoProvider = document.createElement("img");
         logoProvider.src = "./vhs.png"
@@ -166,6 +164,7 @@ function preparePoster(path) {
 }
 
 document.getElementById("logoff").addEventListener("click", () => {
+    console.log("logged off")
     localStorage.clear();
     window.location.replace("./index.html");
 })
