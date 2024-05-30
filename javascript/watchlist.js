@@ -40,7 +40,10 @@ for (const media of mediaInfo) {
         newDiv.className += " film"
         document.getElementById("watchlistFilm").appendChild(newDiv)
     }
-    newDiv.addEventListener("click", () => {
+    newDiv.addEventListener("click", function(e) {
+        if(e.target.parentNode === middleDiv){
+            return;
+        }
         window.location.href = "./dettaglio.html?mediaID=" + media.mediaid.mediaID + "&islocal=" + media.is_local;
     })
 }
@@ -75,7 +78,7 @@ function prepareDeleteBtn(media) {
     buttonDelete.className = "deleteBtn"
 
     buttonDelete.addEventListener("click", () => {
-        deleteFromWatchlist(media.mediaid.mediaID)
+        remoteDao.deleteFromWatchlist(media.mediaid.mediaID)
         let mediaDiv = document.getElementsByClassName(media.mediaid.mediaID)[0]
         mediaDiv.parentNode.removeChild(mediaDiv)
     })

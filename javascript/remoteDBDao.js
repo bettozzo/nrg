@@ -12,6 +12,7 @@ export async function getWatchlist() {
         .from('watchlist')
         .select('id, mediaid(mediaID, is_film, titolo, sinossi, poster_path), is_local')
         .eq("userid", userid)
+        .order("id")
     return data.sort(compareWatchList)
 }
 function compareWatchList(a, b) {
@@ -26,7 +27,7 @@ export async function getMedia(mediaID) {
     let { data, error } = await supabaseConnection
         .from('Media')
         .select('mediaID, is_film, titolo, sinossi, poster_path')
-        .eq("mediaID",mediaID )
+        .eq("mediaID", mediaID)
     return data.sort(compareWatchList)
 }
 

@@ -9,7 +9,6 @@ const mediaID = new URLSearchParams(window.location.search).get("mediaID")
 const isLocal = new URLSearchParams(window.location.search).get("islocal")
 
 let media = (await getMedia(mediaID))[0];
-console.log(media)
 
 titolo.textContent = media.titolo
 poster.src = media.poster_path
