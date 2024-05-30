@@ -1,5 +1,11 @@
 import * as remoteDao from "./remoteDBDao.js";
 
+
+document.getElementById("logoff").addEventListener("click", () => {
+    localStorage.clear();
+    window.location.replace("./index.html");
+})
+
 const userid = new URLSearchParams(window.location.search).get("userid")
 const mediaInfo = await remoteDao.getWatchlist();
 const cronologia = await remoteDao.getCronologia();
@@ -162,9 +168,3 @@ function preparePoster(path) {
     poster.className = "poster"
     return poster
 }
-
-document.getElementById("logoff").addEventListener("click", () => {
-    console.log("logged off")
-    localStorage.clear();
-    window.location.replace("./index.html");
-})
