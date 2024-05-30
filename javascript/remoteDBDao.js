@@ -21,6 +21,15 @@ function compareWatchList(a, b) {
         return 1;
     }
 }
+
+export async function getMedia(mediaID) {
+    let { data, error } = await supabaseConnection
+        .from('Media')
+        .select('mediaID, is_film, titolo, sinossi, poster_path')
+        .eq("mediaID",mediaID )
+    return data.sort(compareWatchList)
+}
+
 export async function getDoveVedereMedia(mediaId) {
     let { data, error } = await supabaseConnection
         .from('DoveVedereMedia')

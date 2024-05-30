@@ -40,7 +40,9 @@ for (const media of mediaInfo) {
         newDiv.className += " film"
         document.getElementById("watchlistFilm").appendChild(newDiv)
     }
-
+    newDiv.addEventListener("click", () => {
+        window.location.href = "./dettaglio.html?mediaID=" + media.mediaid.mediaID + "&islocal=" + media.is_local;
+    })
 }
 
 /* Prepare cronologia */
