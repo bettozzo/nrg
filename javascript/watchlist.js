@@ -12,6 +12,10 @@ const cronologia = await remoteDao.getCronologia();
 
 document.getElementById("titolo").textContent = "Ecco la tua lista, " + userid + " !"
 
+
+//show films first
+document.getElementById("watchlistSeries").style.display = "none"
+
 /* Prepare watchlist */
 for (const media of mediaInfo) {
     var newDiv = await prepareGenericMediaDiv(media.mediaid)
@@ -29,14 +33,14 @@ for (const media of mediaInfo) {
     newDiv.appendChild(middleDiv);
     newDiv.appendChild(rightDiv);
 
-    //show films first
     if (!media.mediaid.is_film) {
-        newDiv.style.display = "none"
         newDiv.className += " TV"
+        document.getElementById("watchlistSeries").appendChild(newDiv)
     } else {
         newDiv.className += " film"
+        document.getElementById("watchlistFilm").appendChild(newDiv)
     }
-    document.getElementById("watchlist").appendChild(newDiv)
+
 }
 
 /* Prepare cronologia */
@@ -133,7 +137,7 @@ async function preparePiattaforme(mediaId, is_local) {
     }
     if (is_local) {
         const logoProvider = document.createElement("img");
-        logoProvider.src = "./vhs.png"
+        logoProvider.src = "./images/vhs.png"
         logoProvider.alt = "In locale"
         logoProvider.title = "In locale"
         logoProvider.className = "provider"
@@ -163,7 +167,7 @@ function preparePoster(path) {
     if (path != null) {
         poster.src = path
     } else {
-        poster.src = "./missing_poster.png"
+        poster.src = "./images/missing_poster.png"
     }
     poster.className = "poster"
     return poster

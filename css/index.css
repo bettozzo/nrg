@@ -7,9 +7,9 @@ h1{
     text-align: center;
     font-size: 4vw;
 }
-h3{
+h4{
     text-align: center;
-    font-size: 1.3vw;
+    font-size: 1vw;
 }
 
 form{
@@ -25,6 +25,7 @@ input{
 
 #username{
     font-size: 1.15vw;
+    padding-left: 0.6%;
 }
 
 

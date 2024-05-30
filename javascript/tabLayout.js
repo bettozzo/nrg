@@ -16,7 +16,8 @@ tvTab.addEventListener("click", function () {
 cronTab.addEventListener("click", async function () {
     clearTabLayoutActive(cronTab)
     document.getElementById("cronologia").style.removeProperty("display");
-    document.getElementById("watchlist").style.display = "none";
+    document.getElementById("watchlistFilm").style.display = "none";
+    document.getElementById("watchlistSeries").style.display = "none";
 })
 
 
@@ -30,7 +31,13 @@ function clearTabLayoutActive(pressedButton) {
 function toggleFilmOrTv(showFilm) {
     var i, tabcontent;
     document.getElementById("cronologia").style.display = "none";
-    document.getElementById("watchlist").style.removeProperty("display");
+    if (showFilm) {
+        document.getElementById("watchlistFilm").style.removeProperty("display");
+        document.getElementById("watchlistSeries").style.display = "none";
+    } else {
+        document.getElementById("watchlistFilm").style.display = "none";
+        document.getElementById("watchlistSeries").style.removeProperty("display");
+    }
 
     tabcontent = document.getElementsByClassName("divMedia");
     for (i = 0; i < tabcontent.length; i++) {
