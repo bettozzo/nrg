@@ -40,9 +40,11 @@ export async function getDoveVedereMedia(mediaId) {
     let validPlatforms = []
     const userPlatforms = await getUserPlatforms();
     for (const platform of data) {
-        if (userPlatforms.map((userP) => platform.piattaforma.nome == userP.piattaformaNome)) {
-            validPlatforms.push(platform.piattaforma)
-        }
+        userPlatforms.map((userP) => {
+            if (platform.piattaforma.nome == userP.piattaformaNome) {
+                validPlatforms.push(platform.piattaforma)
+            }
+        })
     }
     return validPlatforms
 }
