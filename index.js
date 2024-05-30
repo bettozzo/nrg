@@ -25,3 +25,9 @@ document.getElementById("submitBtn").addEventListener("click", async function ()
         window.location.replace("./watchlist.html?userid=" + username);
     }
 })
+
+const isMobile = navigator.userAgentData.mobile;
+if (isMobile) {
+    document.getElementById("submitBtn").style.display = "none"
+    alert("Il sito non è pensato per essere visto da dispositivi mobili\nProva a collegarti da un computer")
+}

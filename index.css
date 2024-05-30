@@ -9,13 +9,18 @@ h1{
 }
 h3{
     text-align: center;
-    font-size: 2vw;
+    font-size: 1.3vw;
 }
 
 form{
     text-align: center;
     font-size: larger;
     font-size: 2vw;
+}
+input{
+    width: 15vw;
+    height: 1.5vw;
+    border: none;
 }
 
 #username{
@@ -30,7 +35,6 @@ form{
     background-color: rgba(131, 109, 0, 0.882);
     border: none;
     color: rgb(255, 251, 245);
-    padding: 15px 32px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
