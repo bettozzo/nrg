@@ -5,10 +5,11 @@ const supabaseConnection = createClient(
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4eXp1cHh2d2l1aHlqdGJid21iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYyOTkzMTMsImV4cCI6MjAzMTg3NTMxM30.4r45EIXsyGCFnsmyx9IcZPFF0NpxFuOrDvf4ghdgdEs"
 );
 const userid = localStorage.getItem("username")
-
+const userPlatforms = (await supabaseConnection.from("PiattaformeDiUser").select("piattaformaNome").eq("userId", userid)).data;
 
 export async function getWatchlist() {
-	let { data, error } = await supabaseConnection.rpc("get_full_details_media").eq("userid", userid);
+	let { data } = await supabaseConnection.rpc("get_full_details_media").eq("userid", userid);
+
 	let medias = [];
 
 	for (let index in data) {
@@ -16,7 +17,7 @@ export async function getWatchlist() {
 
 		let maybePiattaforme = [];
 		sameIdOnes.map(it => {
-			if (it.nome != null)
+			if (it.nome != null && userPlatforms.some(value => value.piattaformaNome == it.nome))
 				maybePiattaforme.push({ "piattaformaNome": it.nome, "piattaformaLogo": it.logo_path })
 		})
 
@@ -34,6 +35,7 @@ export async function getWatchlist() {
 	medias = getUniqueMedias(medias);
 	return medias
 }
+
 
 function getUniqueMedias(medias) {
 	let unique = [];
@@ -107,7 +109,7 @@ export async function markAsSeen(mediaid) {
 }
 
 export async function deleteFromWatchlist(mediaid) {
-	let { data, error } = await supabaseConnection
+	await supabaseConnection
 		.from("watchlist")
 		.delete()
 		.eq("userid", userid)
@@ -116,7 +118,7 @@ export async function deleteFromWatchlist(mediaid) {
 }
 
 async function insertToCronologia(mediaid) {
-	const { data, error } = await supabaseConnection
+	await supabaseConnection
 		.from("CronologiaMedia")
 		.insert([{ userid: userid, mediaId: mediaid }])
 		.select();
