@@ -16,8 +16,46 @@ h1{
 }
 
 #sinossi{
-    font-size: 1vw;
+    font-size: 1.5em;
     margin-left: auto;
     margin-right: auto;
-    width: 50vw;
+    width: 70vw;
+    margin-bottom: 3%;
+}
+
+#buttons{
+    height: 100px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+#btn-seen{
+    height: 100%;
+    width: 40%;
+    color: rgb(235, 217, 195);
+    cursor: pointer;
+    font-size: 2vw;
+    font-weight: bold;
+    background-color: rgba(7, 148, 0, 0.75);
+}
+#btn-seen:hover{
+    color: rgb(206, 191, 172);
+    background-color: rgba(5, 110, 0, 0.75);
+}
+
+#btn-delete{
+    height: 100%;
+    cursor: pointer;
+    color: rgb(235, 217, 195);
+    font-weight: bold;
+    font-size: 2vw;
+    width: 40%;
+    background-color: rgba(182, 0, 0, 0.75);
+}
+#btn-delete:hover{
+    color: rgb(206, 191, 172);
+    background-color: rgba(143, 0, 0, 0.75);
 }

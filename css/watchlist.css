@@ -23,36 +23,6 @@ h1{
     cursor: pointer;
 }
 
-.divLeft{
-    display: flex;
-    align-items: center;
-    width: 50%;
-}
-
-.divMiddle{
-    width: 20%;
-    height: 100%;
-}
-
-.divRight{
-    width: 30%;
-}
-
-.divMiddle button{
-    height: 100%;
-    width: 50%;
-    cursor: pointer;
-    color: rgb(255, 243, 224);
-    font-size: 120%;
-    font-weight: 1000;
-}
-.deleteBtn{
-    background-color: rgba(182, 0, 0, 0.75);
-}
-.seenBtn{
-    background-color: rgba(10, 194, 0, 0.873)
-}
-
 .poster{ 
     width: 150px;
     height: 225px;
@@ -63,14 +33,15 @@ h1{
     margin-left: 40px;
 }
 
-.provider{
-    width: 70px;
-    padding: 5px;
-    float: right;
+.providerDiv{
+    position: absolute;
+    right: 21%;
 }
 
-p{
-    font-size: 150%;
+.provider{
+    float: right;
+    width: 80px;
+    padding: 10px;
 }
 
 #logoff{
@@ -85,4 +56,11 @@ p{
     bottom: 5px;
     float: right;
     position: sticky;
+}
+
+
+.info-data-visione{
+    font-size: 150%;
+    position: absolute;
+    right: 21%;
 }

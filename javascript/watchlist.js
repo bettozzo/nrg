@@ -6,174 +6,119 @@ document.getElementById("logoff").addEventListener("click", () => {
     window.location.replace("./index.html");
 })
 
-const userid = new URLSearchParams(window.location.search).get("userid")
-const mediaInfo = await remoteDao.getWatchlist();
-const cronologia = await remoteDao.getCronologia();
-
+const userid = localStorage.getItem("username")
 document.getElementById("titolo").textContent = "Ecco la tua lista, " + userid + " !"
 
+setupWatchlist();
+setupCronologia();
 
-//show films first
-document.getElementById("watchlistSeries").style.display = "none"
+async function setupWatchlist() {
+    const mediaInfo = await remoteDao.getWatchlist();
+    const filmTab = document.getElementById("watchlistFilm");
+    const seriesTab = document.getElementById("watchlistSeries");
+    /* Prepare watchlist */
+    mediaInfo.forEach(media => {
+        var baseDiv = document.createElement("div");
+        baseDiv.className = "divMedia";
+        baseDiv.onclick = function () {
+            let url = new URL("dettaglio.html", window.location.href);
+            url.searchParams.append("mediaId", media.mediaId);
 
-/* Prepare watchlist */
-for (const media of mediaInfo) {
-    var newDiv = await prepareGenericMediaDiv(media.mediaid)
+            sessionStorage.setItem("media", JSON.stringify(media));
 
-    const rightDiv = document.createElement("div");
-    rightDiv.className = "divRight"
-    let piattaforme = await preparePiattaforme(media.mediaid.mediaID, media.is_local);
-    rightDiv.appendChild(piattaforme);
+            window.location.href = url;
+        };
 
-    const middleDiv = document.createElement("div");
-    middleDiv.className = "divMiddle"
-    middleDiv.appendChild(prepareDeleteBtn(media))
-    middleDiv.appendChild(prepareSeenBtn(media, middleDiv, rightDiv))
 
-    newDiv.appendChild(middleDiv);
-    newDiv.appendChild(rightDiv);
+        /*    poster    */
+        var posterImg = document.createElement("img");
+        posterImg.className = "poster";
+        posterImg.src = media.poster_path;
+        baseDiv.appendChild(posterImg)
 
-    if (!media.mediaid.is_film) {
-        newDiv.className += " TV"
-        document.getElementById("watchlistSeries").appendChild(newDiv)
-    } else {
-        newDiv.className += " film"
-        document.getElementById("watchlistFilm").appendChild(newDiv)
-    }
-    newDiv.addEventListener("click", function(e) {
-        if(e.target.parentNode === middleDiv){
-            return;
+        /*    titolo    */
+        var titolo = document.createElement("p");
+        titolo.className = "titoloMedia"
+        titolo.textContent = media.titolo;
+        baseDiv.appendChild(titolo);
+
+        /*    piattaforme    */
+        var piattaforme = document.createElement("div");
+        piattaforme.className = "providerDiv"
+        for (let i = 0; i < media.piattaforme.length; i++) {
+            var piattaforma = document.createElement("img");
+            piattaforma.src = media.piattaforme[i].piattaformaLogo
+            piattaforma.className = "provider";
+            piattaforma.onclick = function () { openLink(media.piattaforme[i].piattaformaNome) };
+            piattaforme.append(piattaforma);
         }
-        window.location.href = "./dettaglio.html?mediaID=" + media.mediaid.mediaID + "&islocal=" + media.is_local;
+        if (media.is_local) {
+            var piattaforma = document.createElement("img");
+            piattaforma.src = "./images/vhs.png"
+            piattaforma.className = "provider";
+            piattaforme.append(piattaforma);
+        }
+        baseDiv.append(piattaforme);
+
+        if (media.is_film) {
+            filmTab.appendChild(baseDiv);
+        } else {
+            seriesTab.appendChild(baseDiv);
+        }
     })
 }
 
-/* Prepare cronologia */
-document.getElementById("cronologia").style.display = "none";
-for (const media of cronologia) {
-    var newDiv = await prepareGenericMediaDiv(media.mediaId)
-    const rightDiv = document.createElement("div");
-    rightDiv.className = "divRight"
-    const dataVisione = document.createElement("p");
-    var text = media.dataVisione.split("-");
-    dataVisione.textContent = text[2] + "/" + text[1] + "/" + text[0]
-    rightDiv.appendChild(dataVisione);
-    newDiv.appendChild(rightDiv);
-    document.getElementById("cronologia").appendChild(newDiv)
+function openLink(piattaforma) {
+    let url;
+    switch (piattaforma) {
+        case "Netflix": url = "https://www.netflix.com/browse"; break;
+        case "Disney Plus": url = "https://www.disneyplus.com/it-it"; break;
+        case "Rai Play": url = "https://www.raiplay.it/"; break;
+        case "Crunchyroll": url = "https://www.crunchyroll.com/it/"; break;
+        case "Amazon Prime Video": url = "https://www.primevideo.com/"; break;
+    }
+    window.open(url, "_blank");
 }
 
-function prepareSeenBtn(media, middleDiv, rightDiv) {
-    let buttonSeen = document.createElement("button");
-    buttonSeen.textContent = "VISTO"
-    buttonSeen.className = "seenBtn"
-    buttonSeen.addEventListener("click", () => {
-        seenBtnOnClick(media, middleDiv, rightDiv)
+
+async function setupCronologia() {
+    const cronologia = await remoteDao.getCronologia();
+    const cronologiaTab = document.getElementById("cronologia");
+
+    cronologia.forEach(data => {
+        const titolo = data.titolo;
+        const poster_path = data.poster_path;
+        const dataVisione = data.dataVisione;
+
+        var baseDiv = document.createElement("div");
+        baseDiv.className = "divMedia";
+
+        /*    poster    */
+        var posterImg = document.createElement("img");
+        posterImg.className = "poster";
+        posterImg.src = poster_path;
+        baseDiv.appendChild(posterImg)
+
+        /*    titolo    */
+        var titoloEl = document.createElement("p");
+        titoloEl.className = "titoloMedia"
+        titoloEl.textContent = titolo;
+        baseDiv.appendChild(titoloEl);
+
+        /*    data visione    */
+        var dataVisioneEl = document.createElement("p");
+        dataVisioneEl.className = "info-data-visione"
+
+        let date = new Date(dataVisione);
+        let day = date.getDate();
+        var month = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+            "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"][date.getMonth()];
+        let year = date.getFullYear();
+
+        let formattedDate = day + " " + month + " " + year;
+        dataVisioneEl.textContent = formattedDate;
+        baseDiv.appendChild(dataVisioneEl);
+
+        cronologiaTab.appendChild(baseDiv);
     })
-    return buttonSeen;
-}
-
-function prepareDeleteBtn(media) {
-    let buttonDelete = document.createElement("button");
-    buttonDelete.textContent = "RIMUOVI"
-    buttonDelete.className = "deleteBtn"
-
-    buttonDelete.addEventListener("click", () => {
-        remoteDao.deleteFromWatchlist(media.mediaid.mediaID)
-        let mediaDiv = document.getElementsByClassName(media.mediaid.mediaID)[0]
-        mediaDiv.parentNode.removeChild(mediaDiv)
-    })
-    return buttonDelete;
-}
-
-function seenBtnOnClick(media, middleDiw, rightDiv) {
-    remoteDao.markAsSeen(media.mediaid.mediaID)
-    let mediaDiv = document.getElementsByClassName(media.mediaid.mediaID)[0]
-    middleDiw.style.display = "none"
-    rightDiv.style.display = "none"
-
-    const rightDivAfterSeen = document.createElement("div");
-    rightDivAfterSeen.className = "divRight"
-    const dataVisione = document.createElement("p");
-    var date = new Date()
-    var month = 1 + date.getMonth()
-    if (month.toString().length < 2) {
-        month = "0" + month
-    }
-    dataVisione.textContent = date.getDate() + "/" + month + "/" + date.getFullYear()
-    rightDivAfterSeen.appendChild(dataVisione);
-
-    mediaDiv.appendChild(rightDivAfterSeen)
-    let cronologia = document.getElementById("cronologia")
-    cronologia.insertBefore(mediaDiv, cronologia.firstChild)
-}
-
-async function prepareGenericMediaDiv(media) {
-    const newDiv = document.createElement("div");
-    newDiv.className = "divMedia"
-    newDiv.className += " " + media.mediaID
-
-    const leftDiv = document.createElement("div");
-    leftDiv.className = "divLeft"
-    let poster = preparePoster(media.poster_path)
-    let titolo = prepareTitolo(media.titolo)
-    leftDiv.appendChild(poster);
-    leftDiv.appendChild(titolo);
-
-    newDiv.appendChild(leftDiv);
-    return newDiv
-}
-
-async function preparePiattaforme(mediaId, is_local) {
-    const doveVedereMedia = await remoteDao.getDoveVedereMedia(mediaId);
-
-    const newDiv = document.createElement("div");
-    newDiv.className = "divProvider"
-    for (const provider of doveVedereMedia) {
-        const linkToPlatofrm = document.createElement("a");
-        linkToPlatofrm.href = prepareLink(provider.nome)
-        linkToPlatofrm.target = "_blank"
-        const logoProvider = document.createElement("img");
-        logoProvider.src = provider.logo_path
-        logoProvider.alt = provider.nome
-        logoProvider.title = provider.nome
-        logoProvider.className = "provider"
-        linkToPlatofrm.appendChild(logoProvider)
-        newDiv.appendChild(linkToPlatofrm);
-    }
-    if (is_local) {
-        const logoProvider = document.createElement("img");
-        logoProvider.src = "./images/vhs.png"
-        logoProvider.alt = "In locale"
-        logoProvider.title = "In locale"
-        logoProvider.className = "provider"
-        newDiv.appendChild(logoProvider);
-    }
-    return newDiv
-}
-function prepareLink(nome) {
-    switch (nome) {
-        case "Netflix": return "https://www.netflix.com/browse";
-        case "Disney Plus": return "https://www.disneyplus.com/it-it";
-        case "Rai Play": return "https://www.raiplay.it/";
-        case "Crunchyroll": return "https://www.crunchyroll.com/it/";
-        case "Amazon Prime Video": return "https://www.primevideo.com/";
-    }
-}
-function prepareTitolo(titoloTxt) {
-    const titolo = document.createElement("p");
-    titolo.textContent = titoloTxt
-    titolo.className = "titoloMedia"
-    return titolo
-}
-
-function preparePoster(path) {
-
-    const poster = document.createElement("img");
-    if (path != null) {
-        poster.src = path
-    } else {
-        poster.src = "./images/missing_poster.png"
-    }
-    poster.className = "poster"
-    return poster
 }
